@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="iotgpio-jordanemedlock", # Replace with your own username
+    name="iotgpio", # Replace with your own username
     version="0.0.1",
     author="Jordan Medlock",
     author_email="jordanemedlock@gmail.com",
