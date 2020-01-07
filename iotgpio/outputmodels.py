@@ -20,7 +20,7 @@ class Output(object):
 	def __init__(self, channel):
 		self.channel = channel
 		self.state = 0
-		GPIO.setup(chanel, GPIO.OUT)
+		GPIO.setup(channel, GPIO.OUT)
 
 	def high(self):
 		self.state = 1
@@ -36,9 +36,13 @@ class Output(object):
 
 class Relay(Output):
 	def on(self):
-		super().low(self)
+		super().low()
 	def off(self):
-		super().high(self)
+		super().high()
 	def toggle(self):
-		super().set_output(self, not self.state)
+		super().set_output(not self.state)
+
+	@property
+	def is_on(self):
+		return self.state < 0.5 
 

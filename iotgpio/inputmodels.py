@@ -15,9 +15,10 @@ except:
     HIGH = None
     LOW = None
   board = namedtuple('board', ['D14'])(None)
+  temperature = namedtuple('temperature', ['temperature', 'humidity'])
   class adafruit_dht():
     def DHT11(x): 
-      return namedtuple('temperature', ['temperature', 'humidity'])(10, 50)
+      return temperature(10, 50)
 
 GPIO.setmode(GPIO.BCM)
 
