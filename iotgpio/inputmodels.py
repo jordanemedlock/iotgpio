@@ -25,6 +25,7 @@ GPIO.setmode(GPIO.BCM)
 class Input(object):
   def __init__(self, channel):
     self.channel = channel
+    self.prev = 60
     GPIO.setup(channel, GPIO.IN)
 
   def get_value(self):
@@ -37,7 +38,18 @@ class DHT11(Input):
 
   @property
   def temperature(self):
-    return self.internal.temperature
+    temp = None
+    s = 0
+    while temp is None and s < 2:
+      try: 
+        temp = self.internal.temperature
+        self.prev = temp
+      except:
+        time.sleep(0.5)
+        s += 0.5
+    if temp is None:
+      temp = self.prev
+    return temp
 
   @property
   def humidity(self):
