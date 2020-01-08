@@ -19,7 +19,7 @@ except:
   class adafruit_dht():
     def DHT11(x): 
       return temperature(10, 50)
-
+import time
 GPIO.setmode(GPIO.BCM)
 
 class Input(object):
