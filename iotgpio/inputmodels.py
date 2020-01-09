@@ -21,6 +21,7 @@ except:
       return temperature(10, 50)
 
 from abc import *
+import time
 
 GPIO.setmode(GPIO.BCM)
 
@@ -35,6 +36,7 @@ class GPIOInput(Input):
   def __init__(self, channel, value=None):
     super().__init__(value=value)
     self.channel = channel
+    self.prev = 60
     GPIO.setup(channel, GPIO.IN)
 
   def get_value(self):
