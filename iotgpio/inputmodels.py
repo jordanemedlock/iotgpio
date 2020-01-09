@@ -20,28 +20,101 @@ except:
     def DHT11(x): 
       return temperature(10, 50)
 
+from abc import *
+
 GPIO.setmode(GPIO.BCM)
 
 class Input(object):
-  def __init__(self, channel):
+  def __init__(self, value=None):
+    self.value = value
+
+  def get_value(self):
+    return self.value
+
+class GPIOInput(Input):
+  def __init__(self, channel, value=None):
+    super().__init__(value=value)
     self.channel = channel
     GPIO.setup(channel, GPIO.IN)
 
   def get_value(self):
-    return GPIO.input(self.channel)
+    self.value = GPIO.input(self.channel)
+    return super().get_value()
 
-class DHT11(Input):
-  def __init__(self, channel):
+class Thermometer(metaclass=ABCMeta):
+  @property
+  @abstractproperty
+  def celcius(self):
+    pass
+
+
+  @property
+  def fahrenheit(self):
+    return self.celcius * 9.0 / 5.0 + 32
+  
+
+
+class DHT11(Thermometer, Input):
+  def __init__(self, channel, value=None):
+    super().__init__(value=value)
     self.channel = channel
     self.internal = adafruit_dht.DHT11(getattr(board, 'D{}'.format(channel)))
 
+  def get_value(self):
+    self.value = (self.internal.temperature, self.internal.humidity)
+    return super().get_value()
+
+
   @property
   def temperature(self):
-    return self.internal.temperature
+    return self.get_value[0]
 
   @property
   def humidity(self):
-    return self.internal.humidity
+    return self.get_value[1]
+
+  @property
+  def celcius(self):
+    return self.temperature
+
+class DS18B20(Thermometer, Input):
+  def __init__(self, device_file, value=None):
+    super().__init__(value=value)
+    self.device_file = device_file
+  
+  def read_lines(self):
+    with open(self.device_file, 'r') as fp:
+      lines = fp.readlines()
+    return lines
+
+  def read_temp(self):
+    timeout = 5
+    wait = 0.2
+    lines = self.read_lines()
+    while lines[0].strip()[-3:] != 'YES' and timeout > 0:
+      time.sleep(wait)
+      timeout -= wait
+      lines = self.read_lines()
+
+    equals_pos = lines[1].find('t=')
+    if equals_pos != -1:
+      temp_string = lines[1][equals_pos+2:]
+      temp = float(temp_string) / 1000.0
+      return temp
+    else:
+      raise ValueError('Was unable to get temperature')
+
+  def get_value(self):
+    self.value = self.read_temp()
+    return super().get_value()
+
+  @property
+  def celcius(self):
+    return self.get_value()
+  
+
+  
+
     
   
   
