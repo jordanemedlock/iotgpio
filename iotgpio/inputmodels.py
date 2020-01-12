@@ -22,6 +22,8 @@ except:
 
 from abc import *
 import time
+import os
+import glob
 
 GPIO.setmode(GPIO.BCM)
 
@@ -80,9 +82,11 @@ class DHT11(Thermometer, Input):
     return self.temperature
 
 class DS18B20(Thermometer, Input):
-  def __init__(self, device_file, value=None):
+  def __init__(self, value=None):
     super().__init__(value=value)
-    self.device_file = device_file
+    base_dir = '/sys/bus/w1/devices/28*'
+    device_folder = glob.glob(base_dir)
+    self.device_file = device_folder + '/w1_slave'
   
   def read_lines(self):
     with open(self.device_file, 'r') as fp:
