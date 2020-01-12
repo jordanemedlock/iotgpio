@@ -85,7 +85,7 @@ class DS18B20(Thermometer, Input):
   def __init__(self, value=None):
     super().__init__(value=value)
     base_dir = '/sys/bus/w1/devices/28*'
-    device_folder = glob.glob(base_dir)
+    device_folder = glob.glob(base_dir)[0]
     self.device_file = device_folder + '/w1_slave'
   
   def read_lines(self):
