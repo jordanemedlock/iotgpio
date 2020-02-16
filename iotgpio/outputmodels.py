@@ -19,20 +19,16 @@ GPIO.setmode(GPIO.BCM)
 class Output(object):
 	def __init__(self, channel):
 		self.channel = channel
-		self.state = 0
 		GPIO.setup(channel, GPIO.OUT)
 
 	def high(self):
-		self.state = 1
 		GPIO.output(self.channel, GPIO.HIGH)
 
 	def low(self):
-		self.state = 0
 		GPIO.output(self.channel, GPIO.LOW)
 
 	def set_output(self, output):
-		self.state = output
-		GPIO.output(self, channel, output)
+		GPIO.output(self.channel, output)
 
 class Relay(Output):
 	def on(self):
@@ -44,5 +40,5 @@ class Relay(Output):
 
 	@property
 	def is_on(self):
-		return self.state < 0.5 
+		return not GPIO.input(self.channel)
 
